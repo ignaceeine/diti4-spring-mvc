@@ -68,6 +68,12 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.18.2</version> <!-- Remplacez par la version stable souhaitée -->
+    </dependency>
   </dependencies>
   <build>
     <finalName>diti4_spring_mvc</finalName>

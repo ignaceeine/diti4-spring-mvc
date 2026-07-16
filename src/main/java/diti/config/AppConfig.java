@@ -45,6 +45,7 @@ public class AppConfig {
         props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         props.put("hibernate.hbm2ddl.auto", "update");
         props.put("hibernate.show_sql", "true");
+        
 
         em.setJpaProperties(props);
         System.out.println("Entity manager ");

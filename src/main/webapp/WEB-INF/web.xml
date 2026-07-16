@@ -3,6 +3,17 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
+  <!-- 1. Déclarations des Filtres -->
+  <filter>
+    <filter-name>hiddenHttpMethodFilter</filter-name>
+    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+  </filter>
+
+  <!-- 2. Mappings des Filtres -->
+  <filter-mapping>
+    <filter-name>hiddenHttpMethodFilter</filter-name>
+    <servlet-name>spring</servlet-name>
+  </filter-mapping>
 
   <servlet>
     <servlet-name>spring</servlet-name>
@@ -14,5 +25,6 @@
     <servlet-name>spring</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
+
 
 </web-app>

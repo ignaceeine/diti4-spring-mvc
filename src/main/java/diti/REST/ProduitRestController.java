@@ -1,4 +1,4 @@
-package diti.controller;
+package diti.REST;
 
 
 import diti.entity.Produit;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/produit")
-public class ProduitController {
+@RestController
+@RequestMapping("/api/produit")
+public class ProduitRestController {
 
 
     @Autowired
@@ -20,31 +20,28 @@ public class ProduitController {
 
 
     @GetMapping
-    public String getList(Model model){
+    public List<Produit>  getList(){
         List<Produit>  produits =  productService.findAll();
-        model.addAttribute("produits",produits);
-        return "produit";
-    }
-
-
-    @GetMapping("/new")
-    public String form(){
-        return "form-product";
+        return produits;
     }
 
     @PostMapping
-    public String save(@ModelAttribute Produit produit){
+    public String save(@RequestBody Produit produit){
         productService.save(produit);
-        return "redirect:/produit";
+        return "produit ajoute avec succes";
     }
 
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable Long id){
         productService.delete(id);
-        return "redirect:/produit";
+        return "produit supprime avec succes";
     }
 
 
+    @GetMapping("/{id}")
+    public Produit getById(@PathVariable Long id){
+        return  productService.findById(id);
+    }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model){
