@@ -3,6 +3,7 @@ package diti.controller;
 
 import diti.entity.Produit;
 import diti.service.ProductService;
+import diti.service.TypeProduitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,9 @@ public class ProduitController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private TypeProduitService typeProduitService;
+
 
     @GetMapping
     public String getList(Model model){
@@ -28,12 +32,16 @@ public class ProduitController {
 
 
     @GetMapping("/new")
-    public String form(){
+    public String form(Model model){
+        model.addAttribute("typeProduits", typeProduitService.findAll());
         return "form-product";
     }
 
     @PostMapping
     public String save(@ModelAttribute Produit produit){
+        if (produit.getTypeProduit() != null && produit.getTypeProduit().getId() == null) {
+            produit.setTypeProduit(null);
+        }
         productService.save(produit);
         return "redirect:/produit";
     }
@@ -50,6 +58,7 @@ public class ProduitController {
     public String edit(@PathVariable Long id, Model model){
         Produit produit =  productService.findById(id);
         model.addAttribute("produit", produit);
+        model.addAttribute("typeProduits", typeProduitService.findAll());
         return "form-product";
     }
 

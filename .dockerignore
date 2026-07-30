@@ -1,0 +1,10 @@
+target/
+.git/
+.github/
+.idea/
+.smarttomcat/
+*.iml
+.DS_Store
+Dockerfile
+.dockerignore
+README.md

@@ -27,6 +27,9 @@ public class ProduitRestController {
 
     @PostMapping
     public String save(@RequestBody Produit produit){
+        if (produit.getTypeProduit() != null && produit.getTypeProduit().getId() == null) {
+            produit.setTypeProduit(null);
+        }
         productService.save(produit);
         return "produit ajoute avec succes";
     }

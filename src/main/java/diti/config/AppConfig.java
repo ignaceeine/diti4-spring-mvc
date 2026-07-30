@@ -20,7 +20,7 @@ public class AppConfig {
         ds.setDriverClassName("org.postgresql.Driver");
         ds.setUrl("jdbc:postgresql://localhost:5432/diti4_pring_mvc");
         ds.setUsername("postgres");
-        ds.setPassword("P@sser14"); // adapte selon ton installation
+        ds.setPassword("P@sser14");
 
         System.out.println("DATASOURCE");
 
