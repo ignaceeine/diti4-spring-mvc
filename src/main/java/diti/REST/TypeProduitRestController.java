@@ -1,16 +1,17 @@
 package diti.REST;
 
 
+import diti.dto.TypeProduitDTO;
 import diti.entity.TypeProduit;
+import diti.exception.RessourceIntrouvableException;
+import diti.mapper.TypeProduitMapper;
 import diti.service.TypeProduitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/type-produits")
@@ -22,46 +23,42 @@ public class TypeProduitRestController {
 
 
     @GetMapping
-    public List<TypeProduit>  getList(){
-        List<TypeProduit>  typeProduits =  typeProduitService.findAll();
-        return typeProduits;
+    public List<TypeProduitDTO> getList(){
+        List<TypeProduit> typeProduits =  typeProduitService.findAll();
+        return TypeProduitMapper.toDTOList(typeProduits);
     }
 
     @PostMapping
-    public ResponseEntity<TypeProduit> save(@RequestBody TypeProduit typeProduit){
-        return ResponseEntity.status(HttpStatus.CREATED).body(typeProduitService.save(typeProduit));
+    public ResponseEntity<TypeProduitDTO> save(@RequestBody TypeProduitDTO typeProduitDTO){
+        TypeProduit typeProduit = typeProduitService.save(TypeProduitMapper.toTypeProduit(typeProduitDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(TypeProduitMapper.toDTO(typeProduit));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<TypeProduit> delete(@PathVariable Long id){
-        Optional<TypeProduit> typeProduit= typeProduitService.findById(id);
-        if(!typeProduit.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        findTypeProduit(id);
         typeProduitService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<TypeProduit> getById(@PathVariable Long id){
-        Optional<TypeProduit> typeProduit= typeProduitService.findById(id);
-        if(!typeProduit.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return  ResponseEntity.status(HttpStatus.OK).body(typeProduit.get());
+    public TypeProduitDTO getById(@PathVariable Long id){
+        return TypeProduitMapper.toDTO(findTypeProduit(id));
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<String> edit(@PathVariable Long id, TypeProduit typeProduit){
-        Optional<TypeProduit> tp= typeProduitService.findById(id);
-        if(!tp.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        tp.get().setLibelle(typeProduit.getLibelle());
-        typeProduitService.save(tp.get());
+    public ResponseEntity<String> edit(@PathVariable Long id, @RequestBody TypeProduitDTO typeProduitDTO){
+        TypeProduit typeProduit = findTypeProduit(id);
+        TypeProduitMapper.updateTypeProduit(typeProduit, typeProduitDTO);
+        typeProduitService.save(typeProduit);
 
         return ResponseEntity.status(HttpStatus.OK).body("Type Produit modifié avec succes");
+    }
+
+    private TypeProduit findTypeProduit(Long id){
+        return typeProduitService.findById(id)
+                .orElseThrow(() -> new RessourceIntrouvableException("Type produit " + id + " introuvable"));
     }
 
 
