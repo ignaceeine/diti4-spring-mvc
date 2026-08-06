@@ -4,13 +4,16 @@ package diti.REST;
 import diti.entity.TypeProduit;
 import diti.service.TypeProduitService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/type-produit")
+@RequestMapping("/api/type-produits")
 public class TypeProduitRestController {
 
 
@@ -25,28 +28,40 @@ public class TypeProduitRestController {
     }
 
     @PostMapping
-    public String save(@RequestBody TypeProduit typeProduit){
-        typeProduitService.save(typeProduit);
-        return "type produit ajoute avec succes";
+    public ResponseEntity<TypeProduit> save(@RequestBody TypeProduit typeProduit){
+        return ResponseEntity.status(HttpStatus.CREATED).body(typeProduitService.save(typeProduit));
     }
 
     @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable Long id){
+    public ResponseEntity<TypeProduit> delete(@PathVariable Long id){
+        Optional<TypeProduit> typeProduit= typeProduitService.findById(id);
+        if(!typeProduit.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         typeProduitService.delete(id);
-        return "type produit supprime avec succes";
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
     @GetMapping("/{id}")
-    public TypeProduit getById(@PathVariable Long id){
-        return  typeProduitService.findById(id);
+    public ResponseEntity<TypeProduit> getById(@PathVariable Long id){
+        Optional<TypeProduit> typeProduit= typeProduitService.findById(id);
+        if(!typeProduit.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return  ResponseEntity.status(HttpStatus.OK).body(typeProduit.get());
     }
 
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Long id, Model model){
-        TypeProduit typeProduit =  typeProduitService.findById(id);
-        model.addAttribute("typeProduit", typeProduit);
-        return "form-type-produit";
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<String> edit(@PathVariable Long id, TypeProduit typeProduit){
+        Optional<TypeProduit> tp= typeProduitService.findById(id);
+        if(!tp.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        tp.get().setLibelle(typeProduit.getLibelle());
+        typeProduitService.save(tp.get());
+
+        return ResponseEntity.status(HttpStatus.OK).body("Type Produit modifié avec succes");
     }
 
 
