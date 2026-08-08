@@ -3,15 +3,16 @@ package diti.service;
 
 
 import diti.entity.Produit;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
 
     Produit save(Produit product);
 
-    List<Produit> findAll();
+    Page<Produit> findAll(Pageable pageable);
 
     Optional<Produit> findById(Long id);
 

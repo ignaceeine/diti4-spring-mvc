@@ -5,11 +5,12 @@ import diti.entity.Produit;
 import diti.service.ProductService;
 import diti.service.TypeProduitService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/produit")
@@ -24,9 +25,10 @@ public class ProduitController {
 
 
     @GetMapping
-    public String getList(Model model){
-        List<Produit>  produits =  productService.findAll();
-        model.addAttribute("produits",produits);
+    public String getList(@PageableDefault(size = 5, sort = "id") Pageable pageable, Model model){
+        Page<Produit> produits = productService.findAll(pageable);
+        model.addAttribute("produits", produits.getContent());
+        model.addAttribute("page", produits);
         return "produit";
     }
 

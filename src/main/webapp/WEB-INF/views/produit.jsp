@@ -18,3 +18,23 @@
             </td> </tr>
     </c:forEach>
 </table>
+
+<c:if test="${page.totalPages > 1}">
+    <div>
+        <c:if test="${not page.first}">
+            <a href="?page=${page.number - 1}&size=${page.size}">Precedent</a>
+        </c:if>
+
+        <c:forEach var="i" begin="0" end="${page.totalPages - 1}">
+            <c:choose>
+                <c:when test="${i == page.number}"><strong>${i + 1}</strong></c:when>
+                <c:otherwise><a href="?page=${i}&size=${page.size}">${i + 1}</a></c:otherwise>
+            </c:choose>
+        </c:forEach>
+
+        <c:if test="${not page.last}">
+            <a href="?page=${page.number + 1}&size=${page.size}">Suivant</a>
+        </c:if>
+    </div>
+    <p>Page ${page.number + 1} / ${page.totalPages} — ${page.totalElements} produits</p>
+</c:if>

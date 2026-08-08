@@ -21,17 +21,20 @@ public class TypeProduitRestController {
     @Autowired
     private TypeProduitService typeProduitService;
 
+    @Autowired
+    private TypeProduitMapper typeProduitMapper;
+
 
     @GetMapping
     public List<TypeProduitDTO> getList(){
         List<TypeProduit> typeProduits =  typeProduitService.findAll();
-        return TypeProduitMapper.toDTOList(typeProduits);
+        return typeProduitMapper.toDTOList(typeProduits);
     }
 
     @PostMapping
     public ResponseEntity<TypeProduitDTO> save(@RequestBody TypeProduitDTO typeProduitDTO){
-        TypeProduit typeProduit = typeProduitService.save(TypeProduitMapper.toTypeProduit(typeProduitDTO));
-        return ResponseEntity.status(HttpStatus.CREATED).body(TypeProduitMapper.toDTO(typeProduit));
+        TypeProduit typeProduit = typeProduitService.save(typeProduitMapper.toTypeProduit(typeProduitDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(typeProduitMapper.toDTO(typeProduit));
     }
 
     @DeleteMapping("/delete/{id}")
@@ -44,13 +47,13 @@ public class TypeProduitRestController {
 
     @GetMapping("/{id}")
     public TypeProduitDTO getById(@PathVariable Long id){
-        return TypeProduitMapper.toDTO(findTypeProduit(id));
+        return typeProduitMapper.toDTO(findTypeProduit(id));
     }
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<String> edit(@PathVariable Long id, @RequestBody TypeProduitDTO typeProduitDTO){
         TypeProduit typeProduit = findTypeProduit(id);
-        TypeProduitMapper.updateTypeProduit(typeProduit, typeProduitDTO);
+        typeProduitMapper.updateTypeProduit(typeProduit, typeProduitDTO);
         typeProduitService.save(typeProduit);
 
         return ResponseEntity.status(HttpStatus.OK).body("Type Produit modifié avec succes");

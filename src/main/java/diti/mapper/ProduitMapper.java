@@ -3,41 +3,27 @@ package diti.mapper;
 import diti.dto.ProduitDTO;
 import diti.entity.Produit;
 import diti.entity.TypeProduit;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-import java.util.ArrayList;
-import java.util.List;
+@Mapper(componentModel = "spring")
+public interface ProduitMapper {
 
-public class ProduitMapper {
-    public static Produit toProduit(ProduitDTO produitDTO, TypeProduit typeProduit) {
-        Produit p = new Produit();
-        p.setLibelle(produitDTO.getNomProduit());
-        p.setPrix(produitDTO.getPrixProduit());
-        p.setTypeProduit(typeProduit);
-        return p;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "libelle", source = "produitDTO.nomProduit")
+    @Mapping(target = "prix", source = "produitDTO.prixProduit")
+    @Mapping(target = "typeProduit", source = "typeProduit")
+    Produit toProduit(ProduitDTO produitDTO, TypeProduit typeProduit);
 
-    public static void updateProduit(Produit p, ProduitDTO produitDTO, TypeProduit typeProduit) {
-        p.setLibelle(produitDTO.getNomProduit());
-        p.setPrix(produitDTO.getPrixProduit());
-        p.setTypeProduit(typeProduit);
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "libelle", source = "produitDTO.nomProduit")
+    @Mapping(target = "prix", source = "produitDTO.prixProduit")
+    @Mapping(target = "typeProduit", source = "typeProduit")
+    void updateProduit(@MappingTarget Produit p, ProduitDTO produitDTO, TypeProduit typeProduit);
 
-    public static ProduitDTO toDTO(Produit p) {
-        ProduitDTO produitDto = new ProduitDTO();
-        produitDto.setId(p.getId());
-        produitDto.setNomProduit(p.getLibelle());
-        produitDto.setPrixProduit(p.getPrix());
-        if (p.getTypeProduit() != null) {
-            produitDto.setTypeProduitId(p.getTypeProduit().getId());
-        }
-        return produitDto;
-    }
-
-    public static List<ProduitDTO> toDTOList(List<Produit> produits) {
-        List<ProduitDTO> produitDtos = new ArrayList<>();
-        for (Produit p : produits) {
-            produitDtos.add(toDTO(p));
-        }
-        return produitDtos;
-    }
+    @Mapping(target = "nomProduit", source = "libelle")
+    @Mapping(target = "prixProduit", source = "prix")
+    @Mapping(target = "typeProduitId", source = "typeProduit.id")
+    ProduitDTO toDTO(Produit p);
 }
